@@ -1,0 +1,26 @@
+# -*- coding: utf-8 -*-
+import time
+import os,subprocess,time,re,sys
+from Utils import *
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
+class Test1(QtGui.QWidget):
+    def __init__(self):
+        super(Test1,self).__init__()
+        self.t_ui()
+    def t_ui(self):
+        btn = QtGui.QPushButton(u'安装',self)
+        btn.clicked.connect(self.btn_devices)
+        btn.resize(btn.sizeHint())
+        btn.move(400,100)
+        self.show()
+    def btn_devices(self):
+        shell = "adb shell"
+        a = cmd(self,shell)
+        print a
+if __name__ == "__main__":
+    app = QtGui.QApplication(sys.argv)
+    ic = Test1()
+    sys.exit(app.exec_())
+
+
