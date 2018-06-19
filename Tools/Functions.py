@@ -29,19 +29,28 @@ class QFunction(Utils):
                     QtGui.QMessageBox.about(self,"",str(e))
         self.d = Thread_func(install)
         self.d.start()
-
+    def get_app(self):
+        def applists():
+            if self.check_connect() != False:
+                self.app_lists = self.getname_mi()
+                self.d.Signal_cmd.connect(self.Set_app_combo)
+                self.d.Signal_cmd.emit(self.app_lists.keys())
+        self.d = Thread_func(applists)
+        self.d.start()
     def btn_uninstall(self):
         def uninstall():
             if self.check_connect() != False:
-                uninstall_cmd = "adb -s %s uninstall com.cleanmaster.mguard_cn"%(self.get_combo_currentText())
-                self.cmd_show(uninstall_cmd)
+                uninstall_cmd = "adb -s %s uninstall %s"%((self.get_combo_currentText()),self.get_combo_app())
+                print uninstall_cmd
+                if self.cmd_show(uninstall_cmd) == True:
+                    self.update_applist()
         self.d = Thread_func(uninstall)
         self.d.start()
 
     def btn_clean(self):
         def clean():
             if self.check_connect() != False:
-                clear_cmd = "adb -s %s shell pm clear com.cleanmaster.mguard_cn"%(self.get_combo_currentText())
+                clear_cmd = "adb -s %s shell pm clear %s"%((self.get_combo_currentText()),self.get_combo_app())
                 self.cmd_show(clear_cmd)
         self.d = Thread_func(clean)
         self.d.start()
@@ -101,6 +110,11 @@ class QFunction(Utils):
         lists = [u"无"]
         self.combo2.clear()
         self.combo2.addItems(lists)
+    def Set_app_combo(self,lists):
+        self.combo_app.clear()
+        self.combo_app.addItems(lists)
+    def update_applist(self):
+        self.get_app()
     def Push_file(self):
         def push():
             pc = str(self.pc_path.text()).decode('UTF-8').encode('GBK')

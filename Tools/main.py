@@ -25,7 +25,7 @@ class Exemple(QFunction):
         btn_uninstall = QtGui.QPushButton(u'卸载',self)
         btn_uninstall.clicked.connect(self.btn_uninstall)
         #btn_uninstall.resize(btn_uninstall.sizeHint())
-        btn_uninstall.move(280,100)
+        btn_uninstall.move(280,155)
         #刷新列表
         #btn_re = QtGui.QToolButton(self)
         #btn_re.clicked.connect(self.devices_list)
@@ -45,14 +45,28 @@ class Exemple(QFunction):
         self.combo.addItems(string_list)
         self.combo.resize(80, 20)
         self.combo.move(350,10)
+        #刷新已安装应用列表
+        btn_app_re = QtGui.QPushButton(self)
+        btn_app_re.setStyleSheet("QPushButton{background-image:url(1.png);width:20px;height:20px;padding-top:0px;}")
+        btn_app_re.clicked.connect(self.get_app)
+        btn_app_re.move(230,160)
+        #已安装应用列表下拉框
+        self.lab_devices = QtGui.QLabel(u"已安装应用:",self)
+        self.lab_devices.resize(100,20)
+        self.lab_devices.move(15,160)
+        string_list = [u'无']
+        self.combo_app = QtGui.QComboBox(self)
+        self.combo_app.addItems(string_list)
+        self.combo_app.resize(100, 30)
+        self.combo_app.move(120,155)
         #清除数据
         btn_re = QtGui.QPushButton(u'清除数据',self)
         btn_re.clicked.connect(self.btn_clean)
-        btn_re.move(100,100)
+        btn_re.move(380,155)
         #截图
         btn_re = QtGui.QPushButton(u'截图',self)
         btn_re.clicked.connect(self.btn_screenshot)
-        btn_re.move(200,100)
+        btn_re.move(100,100)
         #打开cm
         btn_re = QtGui.QPushButton(u'打开cm',self)
         btn_re.clicked.connect(self.btn_open)

@@ -1,8 +1,13 @@
 # -*-coding: utf-8 -*-
 import subprocess,re
 from PyQt4 import QtGui,QtCore
+import requests     # 导入requests模块
+from bs4 import BeautifulSoup as bs # 从bs4 模块中导入BeautifulSoup模块并命名为bs
 from Func_thread import Thread_func
 #QtGui.QWidget
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 class Utils(QtGui.QDialog):
     def cmd(self,cmd):
         Poplog = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -22,6 +27,7 @@ class Utils(QtGui.QDialog):
             #QtGui.QMessageBox.about(self,u"提示",u"成功")
             self.d.Signal_cmd_show.connect(self.Show_MessageBox)
             self.d.Signal_cmd_show.emit([u"提示",u"成功"])
+            return True
         else:
             #QtGui.QMessageBox.about(self,u"错误",result[0])
             self.d.Signal_cmd_show.connect(self.Show_MessageBox)
@@ -59,6 +65,11 @@ class Utils(QtGui.QDialog):
     def get_combo_currentText(self):
         try:
             return self.lists[str(self.combo.currentText())]
+        except:
+            return False
+    def get_combo_app(self):
+        try:
+            return self.app_lists[str(self.combo_app.currentText()).decode('utf-8')]
         except:
             return False
     def single_cmd(self,cmd):
@@ -112,7 +123,28 @@ class Utils(QtGui.QDialog):
         f = open("devices.txt","w+")
         f.writelines(lists)
         f.close()
-
+    def getapp(self):
+        getlist = "adb -s %s shell pm list packages"%(self.lists[str(self.combo.currentText())])
+        #Poplog = subprocess.Popen(getlist,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        #A = Poplog.stdout.readlines()
+        A = self.cmd(getlist)
+        x = len(A)
+        applist= [""]
+        for s in range(x):
+            s = A[s].split(":")[1].split("\r")[0]
+            applist.append(s)
+        return applist
+    def getname_mi(self):
+        lists = self.getapp()
+        app_dic = {}
+        for s in lists:
+            url = "http://app.mi.com/details?id="+s
+            res = requests.get(url)
+            if res.url != "http://app.mi.com/":
+                response = bs(res.text,'lxml')
+                name = response.h3.string
+                app_dic[name] = s
+        return app_dic
 
 
 
